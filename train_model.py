@@ -12,6 +12,7 @@ print(f"TensorFlow Version: {tf.__version__}")
 x_train = x_train.astype("float32") / 255.0
 x_test = x_test.astype("float32") / 255.0
 
+# Usar tf.newaxis evita fixar a resolução (28, 28) no código, tornando-o adaptável a novos datasets.
 x_train = x_train[..., tf.newaxis]
 x_test = x_test[..., tf.newaxis]
 
@@ -19,6 +20,7 @@ x_test = x_test[..., tf.newaxis]
 
 # Utilização de filtros pequenos (16 e 32) são mais do que suficientes para o MNIST.
 model = keras.Sequential([
+
     layers.Input(shape=(28, 28, 1)),
     
     # 1ª Camada Convolucional
@@ -72,8 +74,16 @@ print(f"Perda (Loss) no Teste    : {test_loss:.4f}")
 print(f"Acurácia (Acc) no Teste  : {test_acc:.2%}")
 print("="*50)
 
-# --- 6. Salvamento do Modelo ---
-# O arquivo deve se chamar model.h5 conforme as regras de engenharia do repositório
-model_path = "model.h5"
-model.save(model_path)
-print(f"\n Modelo treinado salvo com sucesso em: {model_path}")
+# --- 6. Salvamento do Modelo e Gestão de Artefatos ---
+# O arquivo model.h5 atende à exigência do repositório (formato legado com ampla compatibilidade).
+# O arquivo model.keras garante redundância no formato nativo moderno e otimizado do Keras V3.
+
+model_path_h5 = "model.h5"
+model_path_keras = "model.keras"
+
+model.save(model_path_h5)
+model.save(model_path_keras)
+
+print("\n Artefatos gerados com sucesso:")
+print(f" Formato Legado: {model_path_h5}")
+print(f" Formato Nativo: {model_path_keras}")
